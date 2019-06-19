@@ -1,6 +1,8 @@
 package com.example.filesharing_up.models;
 
-public class Material {
+import java.io.Serializable;
+
+public class Material implements Serializable {
 
     private String id;
     private String title;
