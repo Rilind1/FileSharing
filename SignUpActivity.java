@@ -139,7 +139,7 @@ public class SignUpActivity extends AppCompatActivity {
         String emaila = email_1.getText().toString();
         Matcher matcher = Pattern.compile(emailPattern).matcher(emaila);
 
-        String passwordi = "^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[$@$!%*#?&])[A-Za-z\\\\d$@$!%*#?&]{8,}$";
+        String passwordi = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$";
         String passwordi1 = pass_1.getText().toString();
         Matcher matcher1 = Pattern.compile(passwordi).matcher(passwordi1);
         String emri1 = emri_1.getText().toString();
@@ -150,18 +150,15 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this, "Jepni emrin tuaj", Toast.LENGTH_SHORT).show();
             return false;
         } else if (username1.matches("")) {
-            Toast.makeText(SignUpActivity.this, "Jepni usernamein tuaj", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivity.this, "Jepni username-in tuaj", Toast.LENGTH_SHORT).show();
             return false;
         } else if (emaila.matches("")) {
             Toast.makeText(SignUpActivity.this, "Jepni emailin tuaj", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!matcher.matches()) {
-            Toast.makeText(getApplicationContext(), "Jepni email valid", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (passwordi1.matches("")) {
+          } else if (passwordi1.matches("")) {
             Toast.makeText(SignUpActivity.this, "Jepni fjalëkalimin tuaj", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!matcher.matches()) {
+        } else if (!matcher1.matches()) {
             Toast.makeText(getApplicationContext(), "Jepni fjalëkalim valid", Toast.LENGTH_SHORT).show();
             return false;
         } else if (passwordi2.matches("")) {

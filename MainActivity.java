@@ -1,13 +1,19 @@
 package com.example.filesharing_up.activities;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.filesharing_up.R;
-import com.example.filesharing_up.adapters.MaterialetAdapter;
+import com.example.filesharing_up.models.Afatet;
 import com.example.filesharing_up.models.Material;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,9 +29,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseStudentat;
-    private DatabaseReference mDatabaseMaterialet;
-    private RecyclerView recyclerView;
-    private MaterialetAdapter materialetAdapter;
+    private DatabaseReference mDatabaseAfatet;
+    private DatabaseReference mDatabaseLibra;
+
+    private ArrayList<Afatet> afatets;
+    private ArrayList<Material> librat;
+
+    LinearLayout afateLayout, libraLayout;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,35 +46,95 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseStudentat = mFirebaseDatabase.getReference();
-        mDatabaseMaterialet = mFirebaseDatabase.getReference();
+        mDatabaseAfatet = mFirebaseDatabase.getReference();
+        mDatabaseLibra = mFirebaseDatabase.getReference();
 
-        recyclerView = findViewById(R.id.recycler_view);
-        materialetAdapter = new MaterialetAdapter();
-        recyclerView.setAdapter(materialetAdapter);
+        afatets = new ArrayList<>();
+        librat = new ArrayList<>();
 
-        final ArrayList<Material> materials = new ArrayList<>();
+        afateLayout = findViewById(R.id.afate);
+        libraLayout = findViewById(R.id.libra);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Ju lutem beni sabër...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         mDatabaseStudentat
                 .child("Studentat")
                 .child(mAuth.getCurrentUser().getUid())
                 .child("drejtimId")
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        mDatabaseMaterialet
-                                .child("Materialet")
-                                .child(dataSnapshot.getValue(String.class))
+                        String drejtimId = dataSnapshot.getValue(String.class);
+
+                        mDatabaseAfatet
+                                .child("Afatet")
+                                .child(drejtimId)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                            String id = d.child("id").getValue(String.class);
-                                            String title = d.child("title").getValue(String.class);
-                                            String type = d.child("type").getValue(String.class);
-                                            String url = d.child("url").getValue(String.class);
 
-                                            materialetAdapter.addMaterial(new Material(id, title, type, url));
+                                        for (DataSnapshot afatDataSnapshot : dataSnapshot.getChildren()) {
+
+                                            Afatet afat = new Afatet();
+                                            afat.setId(afatDataSnapshot.child("afatId").getValue(String.class));
+                                            afat.setTitle(afatDataSnapshot.child("afatTitle").getValue(String.class));
+                                            ArrayList<Material> materials = new ArrayList<>();
+
+                                            for (DataSnapshot materialDatasnapshot : afatDataSnapshot.child("Materialet").getChildren()) {
+                                                String id = materialDatasnapshot.child("id").getValue(String.class);
+                                                String title = materialDatasnapshot.child("title").getValue(String.class);
+                                                String type = materialDatasnapshot.child("type").getValue(String.class);
+                                                String url = materialDatasnapshot.child("url").getValue(String.class);
+                                                materials.add(new Material(id, title, type, url));
+                                            }
+
+                                            afat.setMaterials(materials);
+                                            afatets.add(afat);
+
+                                            afateLayout.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Intent intent = new Intent(MainActivity.this, AfateActivity.class);
+                                                    intent.putExtra("AFATE", afatets);
+                                                    startActivity(intent);
+                                                }
+                                            });
                                         }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                        mDatabaseLibra
+                                .child("Libra")
+                                .child(drejtimId)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot libraDataSnapshot : dataSnapshot.getChildren()) {
+                                            String id = libraDataSnapshot.child("id").getValue(String.class);
+                                            String title = libraDataSnapshot.child("title").getValue(String.class);
+                                            String type = libraDataSnapshot.child("type").getValue(String.class);
+                                            String url = libraDataSnapshot.child("url").getValue(String.class);
+                                            librat.add(new Material(id, title, type, url));
+                                        }
+
+                                        libraLayout.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(MainActivity.this, LibraActivity.class);
+                                                intent.putExtra("LIBRA", librat);
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                        progressDialog.dismiss();
                                     }
 
                                     @Override
@@ -78,6 +149,26 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                mAuth.signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                ActivityCompat.finishAffinity(this);
+                return true;
+        }
+        return false;
     }
 
 }
