@@ -43,13 +43,8 @@ public class MaterialetAdapter extends RecyclerView.Adapter<MaterialetAdapter.Vi
         return materials.size();
     }
 
-    public void addMaterial(Material material) {
-        this.materials.add(material);
-        notifyDataSetChanged();
-    }
 
     public void addMaterials(ArrayList<Material> materials) {
-        materials.clear();
         this.materials.addAll(materials);
         notifyDataSetChanged();
     }

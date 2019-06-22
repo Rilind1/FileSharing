@@ -46,6 +46,11 @@ public class AfatetAdapter extends RecyclerView.Adapter<AfatetAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
+    public void addAfats(ArrayList<Afatet> afat) {
+        this.afatets.addAll(afat);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView afatet, materialet;
         private ArrayList<Afatet> mAfates;
