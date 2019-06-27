@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import com.example.filesharing_up.R;
 import com.example.filesharing_up.adapters.AfatetAdapter;
@@ -33,4 +34,5 @@ public class AfateActivity extends AppCompatActivity {
         afatetAdapter.addAfats(afatets);
 
     }
+
 }

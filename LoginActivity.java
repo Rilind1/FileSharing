@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.filesharing_up.R;
+import com.google.android.gms.common.util.Base64Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -18,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static EditText email_2;
     private static EditText pass_3;
+    private static Button buton;
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -33,16 +36,21 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Login Form");
 
         initView();
+
+
     }
 
     public void initView() {
         email_2 = findViewById(R.id.email);
         pass_3 = findViewById(R.id.pass);
+        buton = findViewById(R.id.button_login);
     }
+
 
     public void kycu(View view) {
         String email = email_2.getText().toString();
         String password = pass_3.getText().toString();
+
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

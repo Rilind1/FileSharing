@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPass extends AppCompatActivity {
     EditText email;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +33,9 @@ public class ForgotPass extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(ForgotPass.this, "Email sent.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ForgotPass.this, "Email për ndryshim të passwordit u dërgua", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(ForgotPass.this, "Kjo email nuk ekziston", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

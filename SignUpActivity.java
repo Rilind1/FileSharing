@@ -101,11 +101,14 @@ public class SignUpActivity extends AppCompatActivity {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             String fId = ds.child("f_id").getValue().toString();
 
+
                             if (fId.equals(fakultetId.get(position))) {
                                 drejtimetId.add(ds.child("id").getValue().toString());
                                 drejtimetName.add(ds.child("name").getValue().toString());
                             }
+
                         }
+
                         drejtimetAdapter = new ArrayAdapter<>(SignUpActivity.this, android.R.layout.simple_spinner_item, drejtimetName);
                         drejtimet.setAdapter(drejtimetAdapter);
                     }
@@ -159,7 +162,7 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this, "Jepni fjalëkalimin tuaj", Toast.LENGTH_SHORT).show();
             return false;
         } else if (!matcher1.matches()) {
-            Toast.makeText(getApplicationContext(), "Jepni fjalëkalim valid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Jepni fjalëkalim valid me 8 karaktere(1 simbol dhe 1 UC)", Toast.LENGTH_SHORT).show();
             return false;
         } else if (passwordi2.matches("")) {
             Toast.makeText(SignUpActivity.this, "Konfirmoni fjalëkalimin", Toast.LENGTH_SHORT).show();
